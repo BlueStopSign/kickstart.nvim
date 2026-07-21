@@ -152,7 +152,6 @@ vim.opt.listchars = {
   tab = '» ', 
   trail = '·', 
   nbsp = '␣',
-  -- Add these two lines to catch space-indented lines:
   multispace = '» ', 
   leadmultispace = '» ',
 }
