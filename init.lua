@@ -148,8 +148,14 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-guide-options`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
+vim.opt.listchars = { 
+  tab = '» ', 
+  trail = '·', 
+  nbsp = '␣',
+  -- Add these two lines to catch space-indented lines:
+  multispace = '» ', 
+  leadmultispace = '» ',
+}
 --vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -158,7 +164,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 6
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
