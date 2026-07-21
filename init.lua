@@ -805,6 +805,8 @@ local servers = {
       require('tokyonight').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
+          strings= { italic = false }, -- Disable italics in comments
+          operators = { italic = false }, -- Disable italics in comments
         },
       }
 
