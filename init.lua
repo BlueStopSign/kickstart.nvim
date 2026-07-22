@@ -148,13 +148,22 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-guide-options`
 vim.o.list = true
-vim.opt.listchars = { 
-  tab = '» ', 
-  trail = '·', 
-  nbsp = '␣',
-  multispace = '» ', 
-  leadmultispace = '» ',
+vim.opt.listchars = {
+-- tab = '» ',
+   trail = '·',
+   nbsp = '␣',
+-- multispace = '»  ',
+-- leadmultispace = '» ',
 }
+vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.tabstop = 3
+    vim.opt_local.shiftwidth = 3
+    vim.opt_local.softtabstop = 3
+    vim.opt_local.expandtab = true
+  end,
+})
 --vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -186,7 +195,7 @@ vim.diagnostic.config {
   underline = { severity = { min = vim.diagnostic.severity.WARN } },
 
   -- Can switch between these as you prefer
-  virtual_text = true, -- Text shows up at the end of the line
+  virtual_text = true,   -- Text shows up at the end of the line
   virtual_lines = false, -- Text shows up underneath the line, with virtual lines
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
@@ -322,10 +331,10 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
+        { '<leader>s', group = '[S]earch',    mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
-        { 'gr', group = 'LSP Actions', mode = { 'n' } },
+        { '<leader>h', group = 'Git [H]unk',  mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
+        { 'gr',        group = 'LSP Actions', mode = { 'n' } },
       },
     },
   },
@@ -366,7 +375,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -448,12 +457,14 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current workspace.
           -- Similar to document symbols, except searches over your entire project.
-          vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Open Workspace Symbols' })
+          vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols,
+            { buffer = buf, desc = 'Open Workspace Symbols' })
 
           -- Jump to the type of the word under your cursor.
           -- Useful when you're not sure what type a variable is and you want to see
           -- the definition of its *type*, not where it was *defined*.
-          vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
+          vim.keymap.set('n', 'grt', builtin.lsp_type_definitions,
+            { buffer = buf, desc = '[G]oto [T]ype Definition' })
         end,
       })
 
@@ -481,7 +492,8 @@ require('lazy').setup({
       )
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config' } end, { desc = '[S]earch [N]eovim files' })
+      vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config' } end,
+        { desc = '[S]earch [N]eovim files' })
     end,
   },
 
@@ -596,7 +608,9 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           if client and client:supports_method('textDocument/inlayHint', event.buf) then
-            map('<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }) end, '[T]oggle Inlay [H]ints')
+            map('<leader>th',
+              function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }) end,
+              '[T]oggle Inlay [H]ints')
           end
         end,
       })
@@ -607,32 +621,32 @@ require('lazy').setup({
       ---@type table<string, vim.lsp.Config>
 
 
-      
-local servers = {
-  lua_ls = {
-    settings = {
-      Lua = {
-        runtime = {
-          version = 'Lua 5.1', 
-        },
-        completion = {
-          callSnippet = 'Replace',
-        },
-        diagnostics = {
-          -- This completely nukes the annoying LSP text warnings and += syntax errors
-          enable = false, 
-        },
-        workspace = {
-          library = {
-            vim.fn.stdpath("config") .. "/lua"
+
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              runtime = {
+                version = 'Lua 5.1',
+              },
+              completion = {
+                callSnippet = 'Replace',
+              },
+              diagnostics = {
+                -- This completely nukes the annoying LSP text warnings and += syntax errors
+                enable = false,
+              },
+              workspace = {
+                library = {
+                  vim.fn.stdpath("config") .. "/lua"
+                },
+                checkThirdParty = false,
+              },
+              telemetry = { enable = false },
+            },
           },
-          checkThirdParty = false,
         },
-        telemetry = { enable = false },
-      },
-    },
-  },
-}
+      }
 
 
       -- Ensure the servers and tools above are installed
@@ -803,9 +817,10 @@ local servers = {
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
-          strings= { italic = false }, -- Disable italics in comments
-          operators = { italic = false }, -- Disable italics in comments
+          comments = { italic = false },
+          strings = { italic = false },
+          operators = { italic = false },
+          keywords = { italic = false },
         },
       }
 
@@ -878,7 +893,8 @@ local servers = {
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
       -- ensure basic parser are installed
-      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim',
+        'vimdoc' }
       require('nvim-treesitter').install(parsers)
 
       ---@param buf integer
@@ -937,7 +953,7 @@ local servers = {
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  --require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
@@ -974,15 +990,6 @@ local servers = {
     },
   },
 })
-
--- ==========================================================================
--- PICO-8 TABS AND INDENTATION SETTINGS
--- ==========================================================================
-vim.opt.tabstop = 3      -- Render existing tabs as 2 spaces wide
-vim.opt.shiftwidth = 3   -- Insert 2 spaces when hitting the indentation commands (e.g. >> or <<)
-vim.opt.expandtab = true -- Convert tabs to spaces (keeps file layouts identical everywhere)
-vim.opt.softtabstop = 3  -- Make the Backspace key delete 2 spaces at once when treating them like tabs
-
 -- Treat .p8 files natively as Lua files
 vim.filetype.add({
   extension = {
@@ -991,3 +998,43 @@ vim.filetype.add({
 })
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+-- -- Create an autocommand group for global style overrides
+local clear_italics_group = vim.api.nvim_create_augroup("ClearItalics", { clear = true })
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",   -- Applies to any and all themes
+  callback = function()
+    -- List of common groups that use italics
+    local groups = {
+      "Comment",
+      "Keyword",
+      "Statement",
+      "Conditional",
+      "Repeat",
+      "Label",
+      "Operator",
+      "Exception",
+      "Type",
+      "StorageClass",
+      "Structure",
+      "Typedef",
+      "Identifier",
+      "Function",
+      -- Treesitter specific groups
+      "@keyword",
+      "@keyword.return",
+      "@comment",
+      "@operator",
+    }
+
+    for _, group in ipairs(groups) do
+      -- Fetch current styling, then strip the italic property
+      local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+      if hl and hl.italic then
+        hl.italic = false
+        vim.api.nvim_set_hl(0, group, hl)
+      end
+    end
+  end,
+  group = clear_italics_group,
+})
