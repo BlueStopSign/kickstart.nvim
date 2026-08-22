@@ -98,6 +98,7 @@ vim.g.have_nerd_font = false
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
+vim.o.colorcolumn = "74"
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
@@ -152,14 +153,14 @@ vim.opt.listchars = {
    trail = '·',
    nbsp = '␣',
    -- multispace = '»  ',
-   leadmultispace = '│  ',
+   leadmultispace = '│ ',
 }
 vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
    pattern = "*",
    callback = function()
-      vim.opt_local.tabstop = 3
-      vim.opt_local.shiftwidth = 3
-      vim.opt_local.softtabstop = 3
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.softtabstop = 2
       vim.opt_local.expandtab = true
    end,
 })
@@ -628,8 +629,6 @@ require('lazy').setup({
          --  See `:help lsp-config` for information about keys and how to configure
          ---@type table<string, vim.lsp.Config>
 
-
-
          local servers = {
             lua_ls = {
                settings = {
@@ -641,8 +640,28 @@ require('lazy').setup({
                         callSnippet = 'Replace',
                      },
                      diagnostics = {
-                        -- This completely nukes the annoying LSP text warnings and += syntax errors
-                        enable = false,
+                        enable = true, 
+                        
+                        disable = { "lowercase-global", "unused-local", "undefined-global" },
+                        unusedLocalExclude = { "_ENV" },
+                        
+                        globals = {
+                           -- Graphics
+                           'circ', 'circfill', 'rect', 'rectfill', 'line', 'pset', 'pget', 
+                           'spr', 'sspr', 'cls', 'camera', 'clip', 'color', 'pal', 'palt',
+                           
+                           -- Input / Audio
+                           'btn', 'btnp', 'sfx', 'music',
+                           
+                           -- System & Math
+                           'update', 'draw', 'init', '_update', '_draw', '_init',
+                           'print', 'cursor', 'color', 'rnd', 'flr', 'ceil', 'sin', 'cos', 
+                           'atan2', 'sqrt', 'abs', 'mid', 'min', 'max', 'band', 'bor', 'bxor', 
+                           'bnot', 'shl', 'shr',
+                           
+                           -- Memory / Cartridge
+                           'mget', 'mset', 'map', 'peek', 'poke', 'memcpy', 'reload', 'cstore',
+                        },
                      },
                      workspace = {
                         library = {
@@ -653,10 +672,25 @@ require('lazy').setup({
                      telemetry = { enable = false },
                   },
                },
+               
+               handlers = {
+                  ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+                     if result and result.diagnostics then
+                        local filtered = {}
+                        for _, diagnostic in ipairs(result.diagnostics) do
+                           if not (diagnostic.message:find("unexpected symbol") or 
+                                   diagnostic.message:find("syntax error") or
+                                   diagnostic.message:find("expected")) then
+                              table.insert(filtered, diagnostic)
+                           end
+                        end
+                        result.diagnostics = filtered
+                     end
+                     vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+                  end,
+               },
             },
          }
-
-
          -- Ensure the servers and tools above are installed
          --
          -- To check the current status of installed tools and/or manually install
