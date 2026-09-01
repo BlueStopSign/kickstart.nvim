@@ -849,35 +849,82 @@ require('lazy').setup({
    },
 
 
-   -- Gruvbox Colorscheme
-   {
-      'ellisonleao/gruvbox.nvim',
-      priority = 1000,
-      config = function()
-         ---@diagnostic disable-next-line: missing-fields
-         require('gruvbox').setup {
-            styles = {
-               comments = { italic = false },
-               strings = { italic = false },
-               operators = { italic = false },
-               keywords = { italic = false },
-            },
-         }
-      end,
-   },
+ {
+   'ellisonleao/gruvbox.nvim',
+   priority = 1000,
+   config = function()
+      require('gruvbox').setup {
+         styles = {
+            comments = { italic = false },
+            strings = { italic = false },
+            operators = { italic = false },
+            keywords = { italic = false },
+         },
+      }
+   end,
+},
+{
+   'Shatur/neovim-ayu',
+   priority = 1000,
+   config = function()
+      require('ayu').setup({
+         mirage = false,
+      })
+   end,
+},
+{
+  "guillermodotn/nvim-earthsong",
+   name = "earthsong",
+   priority = 1000,
+   config = function()
+      vim.cmd("colorscheme earthsong")
+      require("earthsong").setup({
+        variant = "auto",  -- auto, main, or mute
+        dark_variant = "main", -- main or mute (default variant)
+        dim_inactive_windows = false,
+        extend_background_behind_borders = true,
+        enable = {
+          terminal = true,
+          legacy_highlights = true,
+          migrations = true,
+        },
 
-   -- Ayu Colorscheme
-   {
-      'Shatur/neovim-ayu',
-      priority = 1000,
-      config = function()
-         require('ayu').setup({
-            mirage = false, -- Set to true if you prefer the mirage variant
-         })
-         vim.cmd.colorscheme 'ayu'
-      end,
-   },
+        styles = {
+          bold = false,
+          italic = false,
+          transparency = false,
+        },
 
+        groups = {
+          border = "muted",
+          link = "moss",
+          panel = "base",
+
+          error = "terracotta",
+          hint = "moss",
+          info = "sage",
+          warn = "amber",
+          todo = "clay",
+        },
+
+        highlight_groups = {
+          delimiter = { fg = "amber" },
+          -- Custom overrides
+          -- Comment = { fg = "sage", italic = true },
+        },
+
+        before_highlight = function(group, highlight, palette)
+          -- Modify highlights before applying
+        end,
+      })
+
+vim.cmd("colorscheme earthsong")
+-- Or use specific variant:
+-- vim.cmd("colorscheme earthsong-main")
+-- vim.cmd("colorscheme earthsong-mute")
+
+   end,
+},
    -- Highlight todo, notes, etc in comments
    {
       'folke/todo-comments.nvim',
