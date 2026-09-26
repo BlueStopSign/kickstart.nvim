@@ -864,6 +864,21 @@ require('lazy').setup({
    end,
 },
 {
+  "vimcolorschemes/olive-crt.nvim",
+  lazy = false,
+  priority = 1000,
+  opts = {},
+},
+{
+    "skylarmb/torchlight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      contrast = "hard", -- available: soft, medium, hard, stark
+      palette = "dusk", -- available: dusk, torchlight, dawn
+    },
+  },
+{
    'Shatur/neovim-ayu',
    priority = 1000,
    config = function()
@@ -871,6 +886,17 @@ require('lazy').setup({
          mirage = false,
       })
    end,
+},
+{
+  "Aejkatappaja/cendre",
+  lazy = false,
+  priority = 1000,
+  config = function()
+    require("cendre").setup({
+      background = "hard", -- "hard" | "medium" | "soft"
+      italic_virtual_text = false,
+    })
+  end,
 },
 {
   "guillermodotn/nvim-earthsong",
@@ -918,7 +944,7 @@ require('lazy').setup({
         end,
       })
 
-vim.cmd("colorscheme earthsong")
+vim.cmd("colorscheme cendre")
 -- Or use specific variant:
 -- vim.cmd("colorscheme earthsong-main")
 -- vim.cmd("colorscheme earthsong-mute")
